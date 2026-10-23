@@ -1,6 +1,7 @@
 /* NetHack 3.6	dlb_main.c	$NHDT-Date: 1570258542 2019/10/05 06:55:42 $  $NHDT-Branch: NetHack-3.6 $:$NHDT-Revision: 1.13 $ */
 /* Copyright (c) Kenneth Lorber, Bethesda, Maryland, 1993. */
 /* NetHack may be freely redistributed.  See license for details. */
+/* Changed for IBM i, October 2026: see ibmi/README.md. */
 
 /* data librarian; only useful if you are making the library version, DLBLIB
  */
@@ -166,6 +167,9 @@ char **argv;
     char action = ' ';
     library lib;
 
+#ifdef __ILEC400__
+    ibmi_args(argc, argv); /* IBM i: arguments arrive in EBCDIC */
+#endif
     if (argc > 0 && argv[0] && *argv[0])
         progname = argv[0];
 #ifdef VMS

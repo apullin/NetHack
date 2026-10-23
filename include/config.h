@@ -2,6 +2,7 @@
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2016. */
 /* NetHack may be freely redistributed.  See license for details. */
+/* Changed for IBM i, October 2026: see ibmi/README.md. */
 
 #ifndef CONFIG_H /* make sure the compiler does not see the typedefs twice */
 #define CONFIG_H
@@ -14,6 +15,10 @@
  *              provide it (no need to change sec#1, vmsconf.h handles it).
  *              MacOSX uses the UNIX configuration, not the old MAC one.
  */
+
+#ifdef __ILEC400__ /* IBM i, native ILE C */
+#include "ibmiconf.h"
+#endif
 
 #define UNIX /* delete if no fork(), exec() available */
 
@@ -261,7 +266,8 @@
  *
  */
 
-#if defined(UNIX) && !defined(ZLIB_COMP) && !defined(COMPRESS)
+#if defined(UNIX) && !defined(ZLIB_COMP) && !defined(COMPRESS) \
+    && !defined(NOCOMPRESS)
 /* path and file name extension for compression program */
 #define COMPRESS "/usr/bin/compress" /* Lempel-Ziv compression */
 #define COMPRESS_EXTENSION ".Z"      /* compress's extension */

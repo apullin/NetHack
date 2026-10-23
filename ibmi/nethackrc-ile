@@ -1,0 +1,6 @@
+# NetHack options for the native ILE build (tty interface only; no curses in ILE).
+# Installed as nethackrc in the playground (~/nethack/ile); nethack-ile and
+# NHSTART point NETHACKOPTIONS at it, so ~/.nethackrc (which picks curses for
+# the PASE build) is not read.
+OPTIONS=color,hilite_pet,lit_corridor
+OPTIONS=autopickup,pickup_types:$?!/="+

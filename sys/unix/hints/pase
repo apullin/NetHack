@@ -1,0 +1,59 @@
+#
+# NetHack 3.6  IBM i PASE
+# Copyright (c) Andrew Pullin, 2026.
+# NetHack may be freely redistributed.  See license for details.
+#
+#-PRE
+# IBM i PASE hints file
+# A single-user tty build for PASE, the AIX runtime inside IBM i, with gcc
+# and ncurses from the IBM i open-source packages (/QOpenSys/pkgs).
+#   cd sys/unix && sh setup.sh hints/pase && cd ../.. && make all && make install
+# Play over SSH:  ssh -t -p 2222 user@host $HOME/nethack/bin/nethack
+
+PREFIX=$(HOME)/nethack
+HACKDIR=$(PREFIX)/play
+SHELLDIR=$(PREFIX)/bin
+INSTDIR=$(HACKDIR)
+VARDIR=$(HACKDIR)
+POSTINSTALL=cp -n sys/unix/sysconf $(INSTDIR)/sysconf; chmod $(VARFILEPERM) $(INSTDIR)/sysconf;
+
+CC=gcc
+# gcc 6.3's fixed headers come from AIX 7.1 and define sigset_t without the
+# _SIGSET_T guard that PASE's own 7.5 headers test, so it gets defined twice.
+# -I.../ncurses: <curses.h> must be ncurses. AIX's own curses.h pulls in a
+# term.h whose tputs() and tparm() clash with NetHack's declarations.
+CFLAGS=-O2 -I../include -I/QOpenSys/pkgs/include/ncurses -D_SIGSET_T -DNOTPARMDECL
+CFLAGS+=-DDLB
+CFLAGS+=-DCOMPRESS=\"/QOpenSys/pkgs/bin/gzip\" -DCOMPRESS_EXTENSION=\".gz\"
+CFLAGS+=-DSYSCF -DSYSCF_FILE=\"$(HACKDIR)/sysconf\" -DSECURE
+CFLAGS+=-DTIMED_DELAY
+CFLAGS+=-DHACKDIR=\"$(HACKDIR)\"
+CFLAGS+=-DDUMPLOG
+CFLAGS+=-DCONFIG_ERROR_SECURE=FALSE
+
+LINK=$(CC)
+# The AIX linker records where to find shared libraries at run time.
+LFLAGS=-L/QOpenSys/pkgs/lib -Wl,-blibpath:/QOpenSys/pkgs/lib:/QOpenSys/usr/lib:/usr/lib
+
+# Both the tty and curses interfaces, as the linux hints do. curses maps the
+# arrow keys to movement; choose it with OPTIONS=windowtype:curses.
+CFLAGS+=-DCURSES_GRAPHICS
+WINSRC = $(WINTTYSRC) $(WINCURSESSRC)
+WINOBJ = $(WINTTYOBJ) $(WINCURSESOBJ)
+WINLIB = $(WINTTYLIB)
+
+WINTTYLIB=-lncurses
+
+CHOWN=true
+CHGRP=true
+
+VARDIRPERM = 0755
+VARFILEPERM = 0600
+GAMEPERM = 0755
+
+#-POST
+# After Makefile.utl's own LEX = lex: AIX lex's fixed tables are too small for
+# lev_comp.l ("Too many transitions"); GNU flex from /QOpenSys/pkgs has no limit.
+# NetHack's .l files define yywrap themselves, so no -lfl is needed.
+LEX = flex
+YACC = bison -y

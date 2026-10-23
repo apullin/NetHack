@@ -1,6 +1,7 @@
 /* NetHack 3.6	lev_main.c	$NHDT-Date: 1543371692 2018/11/28 02:21:32 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.56 $ */
 /*      Copyright (c) 1989 by Jean-Christophe Collet */
 /* NetHack may be freely redistributed.  See license for details. */
+/* Changed for IBM i, October 2026: see ibmi/README.md. */
 
 /*
  * This file contains the main function for the parser
@@ -255,6 +256,9 @@ char **argv;
 
     argc = SIZE(mac_argv);
     argv = mac_argv;
+#endif
+#ifdef __ILEC400__
+    ibmi_args(argc, argv); /* IBM i: arguments arrive in EBCDIC */
 #endif
     /* Note:  these initializers don't do anything except guarantee that
      *        we're linked properly.

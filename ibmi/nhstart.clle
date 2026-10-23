@@ -1,0 +1,26 @@
+/* NHSTART: play NetHack on this 5250 display; the NETHACK command runs it. */
+/* Sets what the game reads from its environment, then calls the ILE       */
+/* program NETHACK, which draws with the DSM APIs (vt5250.c).               */
+/* ibmi/build-ile.sh fills in the library and the playground directory      */
+/* (the words between @ signs) and compiles the result.                    */
+PGM
+             DCL        VAR(&USER) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&HOME) TYPE(*CHAR) LEN(64)
+             DCL        VAR(&DRA) TYPE(*CHAR) LEN(13)
+             RTVJOBA    USER(&USER) DEVRCYACN(&DRA)
+             CHGVAR     VAR(&HOME) VALUE('/home/' *TCAT &USER)
+             ADDENVVAR  ENVVAR(USER) VALUE(&USER) REPLACE(*YES)
+             ADDENVVAR  ENVVAR(HOME) VALUE(&HOME) REPLACE(*YES)
+             ADDENVVAR  ENVVAR(NETHACKOPTIONS) REPLACE(*YES) +
+                          VALUE('@@NHDIR@/nethackrc')
+             /* if the session drops, let the game's read fail, so that it  */
+             /* saves as on a Unix hangup; *ENDJOB would end it first       */
+             CHGJOB     DEVRCYACN(*MSG)
+             CALL       PGM(@NHLIB@/NETHACK)
+             /* a crash: say so and return to the command line, instead of  */
+             /* stopping at an inquiry; the job log has the details         */
+             MONMSG     MSGID(CEE9901) EXEC(SNDPGMMSG MSGID(CPF9897) +
+                          MSGF(QCPFMSG) MSGDTA('NetHack ended with an +
+                          error; DSPJOBLOG shows why') MSGTYPE(*DIAG))
+             CHGJOB     DEVRCYACN(&DRA)
+ENDPGM

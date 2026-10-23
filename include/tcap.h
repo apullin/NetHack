@@ -2,13 +2,14 @@
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1989. */
 /*-Copyright (c) Kenneth Lorber, Kensington, Maryland, 2015. */
 /* NetHack may be freely redistributed.  See license for details. */
+/* Changed for IBM i, October 2026: see ibmi/README.md. */
 
 /* not named termcap.h because it may conflict with a system header */
 
 #ifndef TCAP_H
 #define TCAP_H
 
-#ifndef MICRO
+#if !defined(MICRO) && !defined(__ILEC400__)
 #define TERMLIB /* include termcap code */
 #endif
 

@@ -2,6 +2,7 @@
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2011. */
 /* NetHack may be freely redistributed.  See license for details. */
+/* Changed for IBM i, October 2026: see ibmi/README.md. */
 
 /* main.c - Unix NetHack */
 
@@ -16,6 +17,7 @@
 #include <fcntl.h>
 #endif
 
+#ifndef __ILEC400__ /* IBM i: <pwd.h> declares both */
 #if !defined(_BULL_SOURCE) && !defined(__sgi) && !defined(_M_UNIX)
 #if !defined(SUNOS4) && !(defined(ULTRIX) && defined(__GNUC__))
 #if defined(POSIX_TYPES) || defined(SVR4) || defined(HPUX)
@@ -26,6 +28,7 @@ extern struct passwd *FDECL(getpwuid, (int));
 #endif
 #endif
 extern struct passwd *FDECL(getpwnam, (const char *));
+#endif
 #ifdef CHDIR
 static void FDECL(chdirx, (const char *, BOOLEAN_P));
 #endif /* CHDIR */
@@ -58,6 +61,10 @@ char *argv[];
     boolean resuming = FALSE; /* assume new game */
     boolean plsel_once = FALSE;
 
+#ifdef __ILEC400__
+    ibmi_args(argc, argv); /* IBM i: arguments arrive in EBCDIC */
+    ibmi_vt_init();        /* IBM i: a 5250 display, or ANSI over SSH */
+#endif
     sys_early_init();
 
 #if defined(__APPLE__)

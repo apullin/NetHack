@@ -2,6 +2,7 @@
 /* NetHack 3.6  lev_comp.l	$NHDT-Date: 1543371690 2018/11/28 02:21:30 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.25 $ */
 /*	Copyright (c) 1989 by Jean-Christophe Collet */
 /* NetHack may be freely redistributed.  See license for details. */
+/* Changed for IBM i, October 2026: see ibmi/README.md. */
 
 #define LEV_LEX_C
 
@@ -62,8 +63,12 @@ int FDECL(yyoutput, (int));
 
 #if defined(FLEX_SCANNER) || defined(FLEXHACK_SCANNER)
 /* older flex wants this */
+#ifdef __ILEC400__ /* IBM i: <stdlib.h> declares them; see ibmiconf.h */
+#define YY_MALLOC_DECL
+#else
 #define YY_MALLOC_DECL  genericptr_t FDECL(malloc, (size_t)); \
                         genericptr_t FDECL(realloc, (genericptr_t, size_t));
+#endif
 /* newer flex assumes <stdlib.h> so needs this in case it's been suppressed */
 YY_MALLOC_DECL
 #endif

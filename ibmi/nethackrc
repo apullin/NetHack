@@ -1,0 +1,6 @@
+# NetHack options for the PASE build. Install as ~/.nethackrc on the IBM i.
+OPTIONS=color,hilite_pet,lit_corridor
+OPTIONS=autopickup,pickup_types:$?!/="+
+# curses interface: arrow keys move (diagonals stay y u b n)
+OPTIONS=windowtype:curses
+OPTIONS=windowborders:0

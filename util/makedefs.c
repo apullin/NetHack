@@ -4,6 +4,7 @@
 /* Copyright (c) M. Stephenson, 1990, 1991.                       */
 /* Copyright (c) Dean Luick, 1990.                                */
 /* NetHack may be freely redistributed.  See license for details. */
+/* Changed for IBM i, October 2026: see ibmi/README.md. */
 
 #define MAKEDEFS_C /* use to conditionally include file sections */
 
@@ -268,6 +269,9 @@ main(argc, argv)
 int argc;
 char *argv[];
 {
+#ifdef __ILEC400__
+    ibmi_args(argc, argv); /* IBM i: arguments arrive in EBCDIC */
+#endif
     if ((argc == 1) ||
         ((argc != 2)
 #ifdef FILE_PREFIX

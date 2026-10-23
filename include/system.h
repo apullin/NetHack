@@ -2,6 +2,7 @@
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2017. */
 /* NetHack may be freely redistributed.  See license for details. */
+/* Changed for IBM i, October 2026: see ibmi/README.md. */
 
 #ifndef SYSTEM_H
 #define SYSTEM_H
@@ -153,7 +154,7 @@ E void FDECL(qsort, (genericptr_t, size_t, size_t,
 #endif /* NeXT */
 
 #ifndef __SASC_60
-#if !defined(AZTEC_50) && !defined(__GNUC__)
+#if !defined(AZTEC_50) && !defined(__GNUC__) && !defined(__ILEC400__)
 /* may already be defined */
 
 #ifdef ULTRIX
@@ -459,7 +460,8 @@ E char *FDECL(rindex, (const char *, int));
 #if (defined(SUNOS4) && defined(__STDC__)) || defined(_AIX32)
 #define SPRINTF_PROTO
 #endif
-#if defined(TOS) || defined(AZTEC_50) || defined(__sgi) || defined(__GNUC__)
+#if defined(TOS) || defined(AZTEC_50) || defined(__sgi) || defined(__GNUC__) \
+    || defined(__ILEC400__)
 /* problem with prototype mismatches */
 #define SPRINTF_PROTO
 #endif

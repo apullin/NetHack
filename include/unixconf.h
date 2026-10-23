@@ -2,6 +2,7 @@
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Pasi Kallinen, 2018. */
 /* NetHack may be freely redistributed.  See license for details. */
+/* Changed for IBM i, October 2026: see ibmi/README.md. */
 
 #ifdef UNIX
 #ifndef UNIXCONF_H
@@ -49,7 +50,9 @@
                         * job control (note that AIX is SYSV otherwise)
                         * Also define this for AIX 3.2 */
 
+#ifndef __ILEC400__    /* IBM i: no terminal database (ibmiconf.h) */
 #define TERMINFO       /* uses terminfo rather than termcap */
+#endif
                        /* Should be defined for most SYSV, SVR4 (including
                         * Solaris 2+), HPUX, and Linux systems.  In
                         * particular, it should NOT be defined for the UNIXPC
@@ -311,13 +314,17 @@
 
 #define HLOCK "perm" /* an empty file used for locking purposes */
 
+#ifndef tgetch /* IBM i defines its own (ibmiconf.h) */
 #define tgetch getchar
+#endif
 
 #ifndef NOSHELL
 #define SHELL /* do not delete the '!' command */
 #endif
 
+#ifndef __ILEC400__ /* IBM i: the ILE C headers declare all of it (ibmiconf.h) */
 #include "system.h"
+#endif
 
 #if defined(POSIX_TYPES) || defined(__GNUC__)
 #include <stdlib.h>
@@ -358,7 +365,8 @@
 #endif
 
 #ifdef TIMED_DELAY
-#if defined(SUNOS4) || defined(LINUX) || (defined(BSD) && !defined(ULTRIX))
+#if defined(SUNOS4) || defined(LINUX) || (defined(BSD) && !defined(ULTRIX)) \
+    || defined(__ILEC400__)
 #define msleep(k) usleep((k) *1000)
 #endif
 #ifdef ULTRIX

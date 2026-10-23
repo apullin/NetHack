@@ -1,6 +1,7 @@
 /* NetHack 3.6	dlb.h	$NHDT-Date: 1432512780 2015/05/25 00:13:00 $  $NHDT-Branch: master $:$NHDT-Revision: 1.10 $ */
 /* Copyright (c) Kenneth Lorber, Bethesda, Maryland, 1993. */
 /* NetHack may be freely redistributed.  See license for details. */
+/* Changed for IBM i, October 2026: see ibmi/README.md. */
 
 #ifndef DLB_H
 #define DLB_H
@@ -135,8 +136,10 @@ long rsrc_dlb_ftell(dlb *dp);
 #else
 #define WRTMODE "w+"
 #endif
+/* IBM i (ILE C) converts text-mode streams between CCSIDs, so binary
+   files there need real binary modes too */
 #if (defined(MICRO) && !defined(AMIGA)) || defined(THINK_C) \
-    || defined(__MWERKS__) || defined(WIN32)
+    || defined(__MWERKS__) || defined(WIN32) || defined(__ILEC400__)
 #define RDBMODE "rb"
 #define WRBMODE "w+b"
 #else

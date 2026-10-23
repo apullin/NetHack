@@ -2,6 +2,7 @@
 /*	Copyright (c) 1989 by Jean-Christophe Collet	*/
 /*	Copyright (c) 1990 by M. Stephenson		*/
 /* NetHack may be freely redistributed.  See license for details. */
+/* Changed for IBM i, October 2026: see ibmi/README.md. */
 
 /*
  * This file contains the main function for the parser
@@ -68,6 +69,9 @@ char **argv;
 
     argc = SIZE(mac_argv);
     argv = mac_argv;
+#endif
+#ifdef __ILEC400__
+    ibmi_args(argc, argv); /* IBM i: arguments arrive in EBCDIC */
 #endif
 
     Strcpy(infile, "(stdin)");

@@ -2,6 +2,7 @@
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Pasi Kallinen, 2018. */
 /* NetHack may be freely redistributed.  See license for details. */
+/* Changed for IBM i, October 2026: see ibmi/README.md. */
 
 #include "hack.h"
 
@@ -120,6 +121,13 @@ int *wid, *hgt;
     {
 #ifdef MICRO
         get_scr_size();
+#ifdef CLIPPING
+        if (CO < COLNO || LI < ROWNO + 3)
+            setclipped();
+#endif
+#endif
+#ifdef __ILEC400__
+        getwindowsz(); /* IBM i: no terminal database to ask for the size */
 #ifdef CLIPPING
         if (CO < COLNO || LI < ROWNO + 3)
             setclipped();
@@ -587,7 +595,10 @@ xputs(s)
 const char *s;
 {
 #ifndef TERMLIB
-    (void) fputs(s, stdout);
+    /* unset strings are NULL here (hilites[CLR_GRAY] in the ANSI default
+       setup, for one); tputs() ignores those, so do the same */
+    if (s)
+        (void) fputs(s, stdout);
 #else
     tputs(s, 1, xputc);
 #endif
